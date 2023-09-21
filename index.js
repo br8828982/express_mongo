@@ -9,8 +9,6 @@ require('dotenv').config();
 const app = express();
 app.use(express.json());
 
-const tokenExpiration = process.env.TOKEN_EXPIRATION || '1h';
-
 mongoose.connect(process.env.MONGO_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true
@@ -121,7 +119,7 @@ app.post('/login', validateLogin, async (req, res) => {
       return res.status(401).json({ message: 'Invalid username or password' });
     }
 
-    const token = jwt.sign({ userId: user._id }, process.env.SECRET_KEY, { expiresIn: tokenExpiration });
+    const token = jwt.sign({ userId: user._id }, process.env.SECRET_KEY, { expiresIn: process.env.TOKEN_EXPIRATION });
 
     res.json({ message: 'Login successful', user: { userId: user._id }, token });
   } catch (error) {
